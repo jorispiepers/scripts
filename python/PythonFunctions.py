@@ -24,6 +24,29 @@ def validate_ipv4(ipv4):
 
 # 2. Second import function
 
+def bytes_to(newbytes):
+    if isinstance(newbytes, int):
+        if newbytes >= 1024**5: # Converts to Pebibytes
+            print("The amount {} bytes translate into {} PB (Pebibytes)".format(newbytes, newbytes/ 1024**5))
+            return newbytes/ 1024**5
+        elif newbytes >= 1024**4: # Converts to Tebibytes
+            print("The amount {} bytes translate into {} TB (Tebibytes)".format(newbytes, newbytes/ 1024**4))
+            return newbytes/ 1024**4
+        elif newbytes >= 1024**3: # Converts to Gibibytes
+            print("The amount {} bytes translate into {} GB (Gibibytes)".format(newbytes, newbytes/ 1024**3))
+            return newbytes/ 1024**3
+        elif newbytes >= 1024**2: # Converts to Mebibytes
+            print("The amount {} bytes translate into {} MB (Mebibytes)".format(newbytes, newbytes/ 1024**2))
+            return newbytes/ 1024**2
+        elif newbytes >= 1024**1: # Converts to Kibibytes
+            print("The amount {} bytes translate into {} KB (Kibibytes)".format(newbytes, newbytes/ 1024**1))
+            return newbytes/ 1024**1
+        else:
+            print("This will be {} b (bytes)".format(newbytes, newbytes))
+            return newbytes
+
+# 3. Third import function
+
 # Runs factorial on a specific number through a recursive function
 # Input:    INT, INT factorial number you want to test and the starting number 0
 # Output:   Prints the step factorial product/ result from the number which was given for testing
@@ -41,7 +64,7 @@ def recursive_factorial(n, r):
         return r
     recursive_factorial(p, r)
 
-# 3. Third import function
+# 4. Fourth import function
 
 # Runs factorial on a specific number
 # Input:    INT factorial number you want to test
@@ -58,3 +81,17 @@ def factorial(f):
             print("Factorial result: {} = {} * {}".format((p * r), p, r))
             r = p * r
         f -= 1
+
+def seconds_toHMS(seconds):
+    hours = seconds // 3600
+    minutes = (seconds - hours * 3600) // 60
+    remaining_seconds = seconds - hours * 3600 - minutes * 60
+    return hours, minutes, remaining_seconds
+
+def hours_tominutes(hours):
+    minutes = hours * 60
+    return minutes
+
+def hours_toseconds(hours):
+    seconds = hours * 3600
+    return seconds
