@@ -9,6 +9,7 @@
 # Output:   Prints whether it is a proper IPv4 address and in case so returns a tuple of these octets.
 
 import re
+import sys
 
 def validate_ipv4(ipv4):
     if isinstance(ipv4, str):
@@ -16,11 +17,17 @@ def validate_ipv4(ipv4):
         result = re.search(regex, ipv4)
         if result is not None:
             print("The given IPv4 address {}.{}.{}.{} is correct.".format(result[1], result[2], result[3], result[4]))
-            return result[1], result[2], result[3], result[4],
+            return result[1], result[2], result[3], result[4]
         else:
             print("The given IP is not a valid IPv4 address.")
+            sys.exit(1)
     elif all(isinstance(i, int) for i in ipv4) and len(ipv4) == 4:
+        for octet in len(ipv4):
+            if ipv4[octet] > 255:
+                print("Octet {} fails on verification, this is therefore not a proper IPv4 address.".format(octet))
+                sys.exit(1)
         print("The given IPv4 list translates into IPv4 address: {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+        sys.exit(0)
 
 # 2. Second import function
 
@@ -81,6 +88,7 @@ def factorial(f):
             print("Factorial result: {} = {} * {}".format((p * r), p, r))
             r = p * r
         f -= 1
+    sys.exit(0)
 
 def seconds_toHMS(seconds):
     hours = seconds // 3600
