@@ -24,7 +24,7 @@ def validate_ipv4(ipv4):
     elif all(isinstance(i, int) for i in ipv4) and len(ipv4) == 4:
         for octet in len(ipv4):
             if ipv4[octet] > 255:
-                print("Octet {} fails on verification, this is therefore not a proper IPv4 address.".format(octet))
+                print("Octet {} fails on verification, this address {} is therefore not a proper IPv4 address.".format(octet, ipv4))
                 sys.exit(1)
         print("The given IPv4 list translates into IPv4 address: {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
         sys.exit(0)
