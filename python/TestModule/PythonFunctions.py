@@ -13,21 +13,33 @@ import sys
 
 def validate_ipv4(ipv4):
     if isinstance(ipv4, str):
+        if ipv4 == "0.0.0.0":
+            print("The given IP is not a valid IPv4 address.")
+            return 5
         regex = r"(\d+)\.(\d+)\.(\d+)\.(\d+)"
-        result = re.search(regex, ipv4)
-        if result is not None:
-            print("The given IPv4 address {}.{}.{}.{} is correct.".format(result[1], result[2], result[3], result[4]))
-            return result[1], result[2], result[3], result[4]
+        capture = re.search(regex, ipv4)
+        if capture is not None:
+            result = [ int(capture[octet + 1]) for octet in range(4) ]
+            for octet in range(len(result)):
+                if result[octet] > 255:
+                    print("Octet {} fails on verification, the address {}.{}.{}.{} is therefore not a proper IPv4 address.".format(octet + 1, result[0], result[1], result[2], result[3]))
+                    return 4
+            print("The given IPv4 address {}.{}.{}.{} is correct.".format(result[0], result[1], result[2], result[3]))
+            return result[0], result[1], result[2], result[3]
         else:
             print("The given IP is not a valid IPv4 address.")
-            sys.exit(1)
+            return 3
     elif all(isinstance(i, int) for i in ipv4) and len(ipv4) == 4:
-        for octet in len(ipv4):
+        noip = [ 0, 0, 0, 0 ]
+        if ipv4 == noip:
+            print("The IP address cannot be empty!".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+            return 2
+        for octet in range(len(ipv4)):
             if ipv4[octet] > 255:
-                print("Octet {} fails on verification, this address {}.{}.{}.{} is therefore not a proper IPv4 address.".format(octet, ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
-                sys.exit(1)
+                print("Octet {} fails on verification, the address {}.{}.{}.{} is therefore not a proper IPv4 address.".format(octet + 1, ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+                return 1
         print("The given IPv4 list translates into IPv4 address: {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
-        sys.exit(0)
+        return ipv4
 
 # 2. Second import function
 
