@@ -6,7 +6,7 @@
 
 # Checks whether IPv4 address is valid and returns IP address octets
 # Input:    STRING or LIST:INT IPv4 address you wish to test
-# Output:   Prints whether it is a proper IPv4 address and in case so returns a tuple of these octets.
+# Returns:   Prints whether it is a proper IPv4 address and in case so returns a tuple of these octets.
 
 import re
 import sys
@@ -17,15 +17,15 @@ def validate_ipv4(ipv4):
             print("The given IP is not a valid IPv4 address.")
             return 5
         regex = r"(\d+)\.(\d+)\.(\d+)\.(\d+)"
-        capture = re.search(regex, ipv4)
-        if capture is not None:
-            result = [ int(capture[octet + 1]) for octet in range(4) ]
-            for octet in range(len(result)):
-                if result[octet] > 255:
-                    print("Octet {} fails on verification, the address {}.{}.{}.{} is therefore not a proper IPv4 address.".format(octet + 1, result[0], result[1], result[2], result[3]))
+        result = re.search(regex, ipv4)
+        if result is not None:
+            ipv4 = [ int(result[octet + 1]) for octet in range(4) ]
+            for octet in range(len(ipv4)):
+                if ipv4[octet] > 255:
+                    print("Octet {} fails on verification, the address {}.{}.{}.{} is therefore not a proper IPv4 address.".format(octet + 1, ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
                     return 4
-            print("The given IPv4 address {}.{}.{}.{} is correct.".format(result[0], result[1], result[2], result[3]))
-            return result[0], result[1], result[2], result[3]
+            print("The given IPv4 address {}.{}.{}.{} is correct.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+            return ipv4[0], ipv4[1], ipv4[2], ipv4[3]
         else:
             print("The given IP is not a valid IPv4 address.")
             return 3
