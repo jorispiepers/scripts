@@ -35,7 +35,7 @@ def validate_ipv4(ipv4):
             return 4
     elif all(isinstance(i, int) for i in ipv4) and len(ipv4) == 4:
         # Fail here the IP address cannot be 0.0.0.0 or 255.255.255.255
-        noip = [ 0, 0, 0, 0 ]
+        # Not needed noip = [ 0, 0, 0, 0 ]
         if ipv4 == [ 0, 0, 0, 0 ]:
             print("The IP address cannot be {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
             return 3

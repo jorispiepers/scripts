@@ -8,24 +8,30 @@ import os
 
 class TestModule(unittest.TestCase):
     def test_basic(self):
-       testcase1 = "10.10.10.10"
-       expected = ( 10, 10, 10, 10 )
-       self.assertEqual(validate_ipv4(testcase1), expected)
-       testcase2 = [ 10, 10, 10, 10 ]
-       expected = [ 10, 10, 10, 10 ]
-       self.assertEqual(validate_ipv4(testcase2), expected)
-       testcase1 = "1000.0.380.10"
+       correctIP = "192.168.100.10"
+       expected = ( 192, 168, 100, 10 )
+       self.assertEqual(validate_ipv4(correctIP), expected)
+       correctIP = [ 10, 10, 0, 0 ]
+       expected = [ 10, 10, 0, 0 ]
+       self.assertEqual(validate_ipv4(correctIP), expected)
+       octetError = "1920.168.38.1"
        expected = 4
-       self.assertEqual(validate_ipv4(testcase1), expected)
-       testcase2 = [ 10, 380, 10, 10 ]
+       self.assertEqual(validate_ipv4(octetError), expected)
+       octetError = [ 192, 168, 380, 10 ]
        expected = 1
-       self.assertEqual(validate_ipv4(testcase2), expected)
-       testcase3 = "0.0.0.0"
+       self.assertEqual(validate_ipv4(octetError), expected)
+       outScope = "0.0.0.0"
        expected = 5
-       self.assertEqual(validate_ipv4(testcase3), expected)
-       testcase4 = [ 0, 0, 0, 0 ]
+       self.assertEqual(validate_ipv4(outScope), expected)
+       outScope = [ 0, 0, 0, 0 ]
        expected = 2
-       self.assertEqual(validate_ipv4(testcase4), expected)
+       self.assertEqual(validate_ipv4(outScope), expected)
+       outScope = "255.255.255.255"
+       expected = 5
+       self.assertEqual(validate_ipv4(outScope), expected)
+       outScope = [ 255, 255, 255, 255 ]
+       expected = 2
+       self.assertEqual(validate_ipv4(outScope), expected)
 
 if __name__ == '__main__':
     ret = unittest.main(verbosity=2)
