@@ -6,49 +6,59 @@
 
 # Checks whether IPv4 address is valid and returns IP address octets
 # Input:    STRING or LIST:INT IPv4 address you wish to test
-# Returns:   Prints whether it is a proper IPv4 address and in case so returns a tuple of these octets.
+# Returns:   Returns an error when the IPv4 address is invalid, and returns a proper IPv4 octet list in case of success.
 
 import re
 import sys
 
 def validate_ipv4(ipv4):
     if isinstance(ipv4, str):
-        # Fail here the IP address cannot be 0.0.0.0 or 255.255.255.255
+        # Fail here because we found a special character
+        regex = r"[^.\d]"
+        if re.search(regex, ipv4):
+            print("The specific IPv4 address contains letters or special characters which are not allowed.")
+            return 9
+        # Fail here as the IP address cannot be 0.0.0.0 or 255.255.255.255
         if ipv4 == "0.0.0.0":
-            print("The given IP is not a valid IPv4 address.")
-            return 7
+            print("The IPv4 address 0.0.0.0, is not a valid IPv4 address.")
+            return 8
         elif ipv4 == "255.255.255.255":
-            print("The given IP is not a valid IPv4 address.")
-            return 6
+            print("The IPv4 address 255.255.255.255, is not a valid IPv4 address.")
+            return 7
         regex = r"(\d+)\.(\d+)\.(\d+)\.(\d+)"
         result = re.search(regex, ipv4)
         if result is not None:
             ipv4 = [ int(result[octet + 1]) for octet in range(4) ]
+            # Make sure that IPv4 octets are not above 255 or under 0 and fail in case they do
             for octet in range(len(ipv4)):
-                if ipv4[octet] > 255:
+                if ipv4[octet] > 255 or ipv4[octet] <= -1:
                     print("Octet failure in address {}.{}.{}.{}.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
-                    return 5
-            print("The given IPv4 address {}.{}.{}.{} is correct.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+                    return 6
+            # Finally return back the correct IPv4 address list
+            print("The given IPv4 address {}.{}.{}.{}, is correct.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
             return ipv4[0], ipv4[1], ipv4[2], ipv4[3]
         else:
-            print("The given IP is not a valid IPv4 address.")
-            return 4
+            print("The given IPv4 address {}.{}.{}.{}, is not a valid IPv4 address.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+            return 5
     elif all(isinstance(i, int) for i in ipv4) and len(ipv4) == 4:
-        # Fail here the IP address cannot be 0.0.0.0 or 255.255.255.255
-        # Not needed noip = [ 0, 0, 0, 0 ]
+        # Fail here as the IP address cannot be 0.0.0.0 or 255.255.255.255
         if ipv4 == [ 0, 0, 0, 0 ]:
-            print("The IP address cannot be {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
-            return 3
+            print("The given IPv4 address {}.{}.{}.{}, is invalid".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+            return 4
         elif ipv4 == [ 255, 255, 255, 255 ]:
-            print("The IP address cannot be {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
-            return 2
-        # Also make sure the IP octets are within range between 0 and 255
+            print("The given IPv4 address {}.{}.{}.{}, is invalid".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+            return 3
+        # Also make sure the IP octets are between range 0 and 255
         for octet in range(len(ipv4)):
-            if ipv4[octet] >= 256 or ipv4[octet] >= -1:
-                print("Octet failure in address {}.{}.{}.{}.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
-                return 1
-        print("The given IPv4 list translates into IPv4 address: {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+            if ipv4[octet] >= 256 or ipv4[octet] <= -1:
+                print("Octet failure in IPv4 address {}.{}.{}.{}.".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
+                return 2
+        # Finally return back the correct IPv4 address list
+        print("The given IPv4 list translates into the IPv4 address {}.{}.{}.{}".format(ipv4[0], ipv4[1], ipv4[2], ipv4[3]))
         return ipv4
+    else:
+        print("The specific IPv4 address contains letters or special characters which are not allowed.")
+        return 1
 
 # 2. Second import function
 

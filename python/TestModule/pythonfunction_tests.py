@@ -8,35 +8,49 @@ import os
 
 class TestModule(unittest.TestCase):
     def test_basic(self):
-       correctIP = "192.168.100.10"
-       expected = ( 192, 168, 100, 10 )
-       self.assertEqual(validate_ipv4(correctIP), expected)
-       correctIP = [ 10, 10, 0, 0 ]
-       expected = [ 10, 10, 0, 0 ]
-       self.assertEqual(validate_ipv4(correctIP), expected)
-       octetError = "1920.168.38.1"
-       expected = 4
-       self.assertEqual(validate_ipv4(octetError), expected)
-       octetError = [ 192, 168, 380, 10 ]
-       expected = 1
-       self.assertEqual(validate_ipv4(octetError), expected)
-       outScope = "0.0.0.0"
-       expected = 5
-       self.assertEqual(validate_ipv4(outScope), expected)
-       outScope = [ 0, 0, 0, 0 ]
-       expected = 2
-       self.assertEqual(validate_ipv4(outScope), expected)
-       outScope = "255.255.255.255"
-       expected = 5
-       self.assertEqual(validate_ipv4(outScope), expected)
-       outScope = [ 255, 255, 255, 255 ]
-       expected = 2
-       self.assertEqual(validate_ipv4(outScope), expected)
+        # Correct IP string version
+        correctIP = "192.168.0.254"
+        expected = ( 192, 168, 0, 254 )
+        self.assertEqual(validate_ipv4(correctIP), expected)
+        # Correct IP list version
+        correctIP = [ 192, 168, 0, 254 ]
+        expected = [ 192, 168, 0, 254 ]
+        self.assertEqual(validate_ipv4(correctIP), expected)
+        # Octet error IP string version
+        octetError = "1920.168.38.1"
+        expected = 6
+        self.assertEqual(validate_ipv4(octetError), expected)
+        octetError = "192.168.38.-1"
+        expected = 9
+        self.assertEqual(validate_ipv4(octetError), expected)
+        # Octet error IP list version
+        octetError = [ 192, 168, 380, 10 ]
+        expected = 2
+        self.assertEqual(validate_ipv4(octetError), expected)
+        octetError = [ 192, 168, 38, -1 ]
+        expected = 2
+        self.assertEqual(validate_ipv4(octetError), expected)
+        reg = "keg"
+        octetError = [ 192, 168, 38, reg ]
+        expected = 1
+        # Invalid IPs string variant
+        self.assertEqual(validate_ipv4(octetError), expected)
+        outScope = "0.0.0.0"
+        expected = 8
+        self.assertEqual(validate_ipv4(outScope), expected)       
+        outScope = "255.255.255.255"
+        expected = 7
+        self.assertEqual(validate_ipv4(outScope), expected)
+        # Invalid IPs list variant
+        outScope = [ 0, 0, 0, 0 ]
+        expected = 4
+        self.assertEqual(validate_ipv4(outScope), expected)
+        outScope = [ 255, 255, 255, 255 ]
+        expected = 3
+        self.assertEqual(validate_ipv4(outScope), expected)
 
 if __name__ == '__main__':
-    ret = unittest.main(verbosity=2)
-
-print(ret)
+    ret = unittest.main()
     #regex = r"([\W\w+]+)\\\w+"
     #source = os.getcwd()
     #dest = (re.search(regex, source))[1]
