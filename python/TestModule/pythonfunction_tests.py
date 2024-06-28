@@ -48,6 +48,9 @@ class TestModule(unittest.TestCase):
         outScope = [ 255, 255, 255, 255 ]
         expected = 3
         self.assertEqual(validate_ipv4(outScope), expected)
+        days = 3
+        expected = 72
+        self.assertEqual(days_toHMS(days), expected)        
 
 if __name__ == '__main__':
     ret = unittest.main()
