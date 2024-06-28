@@ -123,13 +123,15 @@ def factorial(f):
 
 def days_toHMS(days):
     # 1 day = 24 H
+    hours = days_toHours(days)
     # 1 Hour = 60 M
+    minutes = days_toMinutes(days)
     # 1 Minute = 60 S
-    hours = days * 24
+    seconds = days_toSeconds(days)
     print("The {} days equal to {} hours.".format(days, hours))
-    print("The {} days equal to {} minutes.".format(days, hours_toMinutes(hours)))
-    print("The {} days equal to {} seconds.".format(days, hours_toSeconds(hours)))
-    return hours
+    print("The {} days equal to {} minutes.".format(days, minutes))
+    print("The {} days equal to {} seconds.".format(days, seconds))
+    return hours, minutes, seconds
 
 def seconds_toHMS(seconds):
     hours = seconds // 3600
@@ -137,14 +139,14 @@ def seconds_toHMS(seconds):
     remaining_seconds = seconds - hours * 3600 - minutes * 60
     return hours, minutes, remaining_seconds
 
-def hours_toMinutes(hours):
-    minutes = hours * 60
+def days_toHours(days):
+    hours = days * 24
+    return hours
+
+def days_toMinutes(days):
+    minutes = days * 1440
     return minutes
 
-def minutes_toSeconds(minutes):
-    seconds = minutes * 60
-    return seconds
-
-def hours_toSeconds(hours):
-    seconds = hours * 3600
+def days_toSeconds(days):
+    seconds = days * 86400
     return seconds

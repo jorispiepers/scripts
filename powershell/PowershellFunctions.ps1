@@ -131,3 +131,42 @@ CompressArchive $currentPath;
 
 cd $currentPath;
 Get-ChildItem;
+
+# Get Service data
+Get-Service | Where-Object Status -Match "Running"
+Get-Service -DependentServices
+
+# Get Drive information
+Get-Disk
+
+# Get memory information
+Get-Counter '\Memory\Available Bytes'
+Get-Counter '\Memory\Committed Bytes'
+Get-Counter '\Processor(_Total)\% Processor Time'
+
+# Return all counters related to memory
+Get-Counter -ListSet *memory* | Select-Object -ExpandProperty  Counter
+
+# Return all counters related to GPU
+Get-Counter -ListSet *gpu* | Select-Object -ExpandProperty  Counter
+
+# Return all counters related to PhysicalDisk/ physical network iface
+Get-Counter -ListSet *phy* | Select-Object -ExpandProperty  Counter
+
+# Return all counters related to Processor
+Get-Counter -ListSet *processor* | Select-Object -ExpandProperty  Counter
+
+# Get storage space
+Get-PSDrive
+
+$OS = Get-Ciminstance Win32_OperatingSystem
+$cpuLoad = (Get-CimInstance win32_processor).LoadPercentage
+$ramUsage = (100 - ($OS.FreePhysicalMemory / $OS.TotalVisibleMemorySize) * 100)
+
+Write-Host $OS
+Write-Host $cpuLoad
+Write-Host $ramUsage
+
+Get-EventLog -LogName Application
+Get-EventLog -LogName Security
+Get-EventLog -LogName System

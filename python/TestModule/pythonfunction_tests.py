@@ -1,5 +1,6 @@
 # Testing out our scripts.
 from PythonFunctions import validate_ipv4
+from PythonFunctions import days_toHMS
 
 import unittest
 import shutil
@@ -49,7 +50,7 @@ class TestModule(unittest.TestCase):
         expected = 3
         self.assertEqual(validate_ipv4(outScope), expected)
         days = 3
-        expected = 72
+        expected = ( 72, 4320, 259200 )
         self.assertEqual(days_toHMS(days), expected)        
 
 if __name__ == '__main__':
