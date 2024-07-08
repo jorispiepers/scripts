@@ -27,7 +27,7 @@ function ExtractTar {
 			}
 			
 			$currentPath = $(Get-Location);
-			cd $filePath\$newFolder;
+			Set-Location $filePath\$newFolder;
 			
 			if (C:\Progra~1\7-Zip\7z.exe x $filePath\$fileName) {
 				Write-Host "Decompression $filePath\$newFolder\$fileName okay ..."
@@ -38,7 +38,7 @@ function ExtractTar {
 				exit;
 			}
 			
-			cd $currentPath;
+			Set-Location $currentPath;
 		}
 	} else {
 		Write-Host "Can't extract anything no 7zip .tar decompression tool available exiting script ...";
@@ -109,7 +109,7 @@ function CompressArchive {
 				$archiveName = $(Split-Path $archiveFolder -Leaf);
 				
 				$currentPath = $(Get-Location);
-				cd $archiveFolder;
+				Set-Location $archiveFolder;
 				
 				C:\Progra~1\7-Zip\7z.exe a .\DICOM-$archiveName.7z -r .\DICOM -mx9 -v100m;
 				Move-Item .\DICOM-$archiveName* $currentPath;
@@ -117,7 +117,7 @@ function CompressArchive {
 				Write-Host "Zipping should be done manually, 7zip compression tools do not exist on this server ...";
 				Write-Host "Folder $archiveFolder\DICOM could not be compressed ...";
 			}
-			cd $currentPath;
+			Set-Location $currentPath;
 		}
 	}
 }
@@ -129,7 +129,7 @@ ExtractTar $currentPath;
 ConvertDicom $currentPath;
 CompressArchive $currentPath;
 
-cd $currentPath;
+Set-Location $currentPath;
 Get-ChildItem;
 
 # Get Service data
