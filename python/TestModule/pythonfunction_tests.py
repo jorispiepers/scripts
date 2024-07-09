@@ -2,10 +2,8 @@
 from PythonFunctions import validate_ipv4
 from PythonFunctions import days_toHMS
 
-import unittest
-import shutil
-import re
 import os
+import unittest
 
 class TestModule(unittest.TestCase):
     def test_basic(self):
@@ -54,6 +52,7 @@ class TestModule(unittest.TestCase):
         self.assertEqual(days_toHMS(days), expected)        
 
 if __name__ == '__main__':
+    os.system('cls')
     ret = unittest.main()
     #regex = r"([\W\w+]+)\\\w+"
     #source = os.getcwd()
