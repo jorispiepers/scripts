@@ -11,7 +11,7 @@ def scan(target, ports):
         scan_port(target, port, sock)
 
     sock.close()
-    print(f"\nTime used to scan all ports, {time.perf_counter() - tick:.4f} seconds.")
+    print(f"{newline}Time used to scan all ports, {time.perf_counter() - tick:.4f} seconds.")
 
 def scan_port(ipaddress, port, sock):
     try:
