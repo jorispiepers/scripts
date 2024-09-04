@@ -20,9 +20,16 @@ def clearScreen():
     elif 'Windows' in osv:
         os.system('cls')
 
-def checkrequirements(fileName):
-    from shutil import which
-    return which(fileName) is not None
+def fileVersion(fileName):
+    try:
+        cmd = [ 'which', fileName ]
+        process = subprocess.run(cmd, capture_output=True)
+        if process.returncode == 0:
+            return process.returncode
+        else:
+            return process.returncode
+    except:
+        return 2
 
 # Make sure subfolders still exist
 def createDir(directory):
@@ -280,7 +287,7 @@ def countromsindat():
                 print(f'{source} -> {destination}.')
                 os.rename(source, destination)
     
-
+    # Checks whether you are missing some ROM's
     for root, subdirs, datfiles in os.walk(datDir):
         for dat in datfiles:
             tree = ET.parse(f"./{datDir}/{dat}")
@@ -308,8 +315,8 @@ def countromsindat():
 # We clear the screen
 clearScreen()
 
-sevenzip = checkrequirements('7z')
-if sevenzip is not None:
+sevenzip = fileVersion('7z')
+if sevenzip == 0:
     # Here we extract the files from the packed folder
     # and move the folder to cleanup folder
     extractFiles()
@@ -324,4 +331,4 @@ if sevenzip is not None:
     # the complete folder
     countromsindat()
 else:
-    print('Aborting, 7zip is not installed you can install it by executing: "apt install p7zip"')
+    print('Aborting, 7zip is not installed you can install it by running: "apt/ dnf install p7zip"')
