@@ -1,6 +1,5 @@
 import os
 import re
-import shutil
 import hashlib
 import platform
 import subprocess
@@ -21,12 +20,16 @@ def clearScreen():
     elif 'Windows' in osv:
         os.system('cls')
 
+def checkrequirements(fileName):
+    from shutil import which
+    return which(fileName) is not None
+
 # Make sure subfolders still exist
 def createDir(directory):
     try:
         os.makedirs(directory, mode=0o777, exist_ok=True)
     except:
-        print("Couldn't create directory!")    
+        print("Couldn't create directory!" )
         exit(100)
 
 def extractZip(fileName, targetDir):
@@ -42,7 +45,7 @@ def createSevenZip(archiveName, archivingFileFolder):
 def isEmptyFolder(pathToFolder):
     if len(os.listdir(pathToFolder)) == 0:
         return 0
-    else:    
+    else:
         return 1
 
 def isValidPath(pathToFile):
@@ -149,16 +152,17 @@ def checkROMs():
     datFiles = getFileList(datDir)
     for datPath, datFile in datFiles:
         fullPath = f'{datPath}/{datFile}'
-        tree = ET.parse(fullPath)
-        root = tree.getroot()
-        for romSet in root.findall('.//header/name'):
-            # Create subfolders for rom sets in case they do not exist
-            romSetSubDir = f'./{workDir}/{romSet.text}'
-            testSubDir = f'./{completeDir}/{romSet.text}'
-            # In case romset directory exists in complete directory we ignore extraction to these folders
-            if isValidPath(testSubDir) == 0:
-                if isValidPath(romSetSubDir) == 0:
-                    createDir(romSetSubDir)
+        if fullPath.endswith('.dat'):
+            tree = ET.parse(fullPath)
+            root = tree.getroot()
+            for romSet in root.findall('.//header/name'):
+                # Create subfolders for rom sets in case they do not exist
+                romSetSubDir = f'./{workDir}/{romSet.text}'
+                testSubDir = f'./{completeDir}/{romSet.text}'
+                # In case romset directory exists in complete directory we ignore extraction to these folders
+                if isValidPath(testSubDir) == 0:
+                    if isValidPath(romSetSubDir) == 0:
+                        createDir(romSetSubDir)
 
     # Rearranged for and if nesting so that it limits disk access for each romset
     # Also made sure that certain dats are no longer checked once these sets are
@@ -244,7 +248,6 @@ def countromsindat():
     completeDir = romDir[2]
 
     datCount = []
-    romCount = []
     # Population of the names and romset names in our lists
     workDirF = getSubDir(workDir)
     for subDir in workDirF:
@@ -264,9 +267,10 @@ def countromsindat():
                         for key, value in game.items():
                             if 'name' in key:
                                 dCount += 1
-                if dCount > 0:    
+                if dCount > 0:
                     datCount.append((romSet.text, dCount))
 
+    romCount = []
     for dRomSet, dCount in datCount:
         for fRomSet, fCount in romCount:
             # Move our directory
@@ -277,7 +281,7 @@ def countromsindat():
                 os.rename(source, destination)
     
 
-    """for root, subdirs, datfiles in os.walk(datDir):
+    for root, subdirs, datfiles in os.walk(datDir):
         for dat in datfiles:
             tree = ET.parse(f"./{datDir}/{dat}")
             root = tree.getroot()
@@ -299,21 +303,25 @@ def countromsindat():
                     match = 1
 
         if match != 1:
-            print(f'Missing ROM file {dName} from {dSet}')"""
-    
+            print(f'Missing ROM file {dName} from {dSet}')
+
 # We clear the screen
 clearScreen()
 
-# Here we extract the files from the packed folder
-# and move the folder to cleanup folder
-extractFiles()
+sevenzip = checkrequirements('7z')
+if sevenzip is not None:
+    # Here we extract the files from the packed folder
+    # and move the folder to cleanup folder
+    extractFiles()
 
-# The meat of the script, which will check whether
-# the files match MD5 and SHA1 hash from the
-# imported DATs
-checkROMs()
+    # The meat of the script, which will check whether
+    # the files match MD5 and SHA1 hash from the
+    # imported DATs
+    checkROMs()
 
-# Some management of the roms folder, we can
-# decide to move the folders we worked on to
-# the complete folder
-countromsindat()
+    # Some management of the roms folder, we can
+    # decide to move the folders we worked on to
+    # the complete folder
+    countromsindat()
+else:
+    print('Aborting, 7zip is not installed you can install it by executing: "apt install p7zip"')
