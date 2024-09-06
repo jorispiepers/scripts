@@ -65,15 +65,29 @@ def getsubdir(folder):
     for pathToFile, subDir, file in os.walk(folder):
         return subDir
 
-def extract(fileN, targetDir):
-    cmd = ['7z', 'x', fileN, f'-o{targetDir}', '-y' ]
-    process = subprocess.run(cmd, capture_output=True)
-    return process.returncode
+def remover(path):
+    try:
+        cmd = [ 'rm', '-rf', str(path) ]
+        process = subprocess.run(cmd, capture_output=True)
+        return process.returncode
+    except:
+        pass
 
 def compress(archiveN, archFileF):
-    cmd = ['7z', 'a', '-tzip', archiveN, archFileF ]
-    process = subprocess.run(cmd, capture_output=True)
-    return process.returncode
+    try:
+        cmd = [ '7z', 'a', '-tzip', archiveN, archFileF ]
+        process = subprocess.run(cmd, capture_output=True)
+        return process.returncode
+    except:
+        pass
+
+def extract(fileN, targetDir):
+    try:
+        cmd = [ '7z', 'x', fileN, f'-o{targetDir}', '-y' ]
+        process = subprocess.run(cmd, capture_output=True)
+        return process.returncode
+    except:
+        pass
 
 # Make sure subfolders still exist
 def createdir(directory):

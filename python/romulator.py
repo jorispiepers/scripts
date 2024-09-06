@@ -89,7 +89,7 @@ def checkROMs(workDir, compDir, extDir, datDir):
         romList = []
         romPaths = corelib.getfilel(extDir)
         if len(romPaths) > 0:
-            print(f'Yay! We have {len(romPaths)} items, from our dat files to compare against!')
+            print(f'Found {len(romPaths)} items, from our dat files to compare against.')
             for folder, fRom in romPaths:
                 fPath = f'{folder}/{fRom}'
                 if corelib.validpath(fPath) == 1:
@@ -99,7 +99,7 @@ def checkROMs(workDir, compDir, extDir, datDir):
             datList = []
             datFiles = corelib.getfilel(datDir)
             if len(datFiles) > 0:
-                print(f'This is looking good, there are {len(datFiles)} ROM files worth checking out as well.')
+                print(f'There are {len(datFiles)} ROM files worth checking out as well.')
                 for datPath, datFile in datFiles:
                     fPath = f'{datPath}/{datFile}'
                     tree = ET.parse(fPath)
@@ -124,45 +124,37 @@ def checkROMs(workDir, compDir, extDir, datDir):
                     for dSet, dName, dRom, dMD5, dSHA1 in datList:
                         # We got a match!
                         if fMD5 == dMD5 and fSHA1 == dSHA1:
-                            print(f'Comparing {dName}\nDAT MD5 is: {dMD5} ROM MD5 is: {fMD5}\nDAT SHA1 is: {dSHA1} ROM SHA1 is: {fSHA1}\n\n')
+                            print(f'Found match on: {dName}\nDAT MD5 is: {dMD5} ROM MD5 is: {fMD5}\nDAT SHA1 is: {dSHA1} ROM SHA1 is: {fSHA1}')
                             # In case our new file does not yet exist and the current file name
                             # does not match our dat filename on record we rename our file!
                             if fRom != dRom:
                                 renFile = f'{path}/{dRom}'
-                                print(f'File Game Name is: {fRom}')
-                                print(f'Dat Game Name is: {dRom}')
-                                print(f'Rename ROM file: {fPath} to {renFile}\n\n')
                                 # Change the ROM name to the correct file name
                                 os.rename(fPath, renFile)
                                 fPath = renFile
                             # In case 7zip archive does not exist and the ROM file does exist, create it
                             archFName = f'{workDir}/{dSet}/{dName}.zip'
-                            print(fPath, archFName)
                             if corelib.validfile(fPath) == 0 and corelib.validfile(archFName) == 1:
                                 if corelib.compress(archFName, fPath) == 0:
-                                    print(f'Archive {archFName} is created.')
+                                    print(f'Archive {archFName} is created.\n\n')
                             elif corelib.validfile(fPath) == 0 and corelib.validfile(archFName) == 0:
                                 if corelib.compress(archFName, fPath) == 0:
-                                    print(f'Added file {fPath} to archive {archFName}.')
+                                    print(f'Added file {fPath} to archive {archFName}.\n\n')
                     if corelib.validfile(fPath) == 0:
                         os.remove(fPath)
-                # Cleaning up extraction folders, to make sure we
-                # are not extracting the same files again and again.
-                folders = []
-                for pathToFile, subdirs, files in os.walk(extDir):
-                    if os.path.isdir(pathToFile):
-                        folders.append(pathToFile)
-                folders.sort(key=len, reverse=True)
-                for folder in folders:
-                    # directory exists
-                    if corelib.emptyfol(folder) == 0:
-                        os.rmdir(folder)
             else:
                 print(f'Cannot find any DAT files in this path {datDir}.')
         else:
             print(f'Cannot find any ROM files in this path {extDir}.')
     else:
         print(f'Cannot find any DAT files in this path {datDir}.')
+
+    # Cleaning up extraction folders, to make sure we
+    # are not extracting the same files again and again.
+    cleanup = [ os.path.join(extDir, i) for i in os.listdir(extDir) ]
+    for folder in cleanup:
+        if corelib.validpath(folder) == 0:
+            corelib.remover(folder)
 
 def countromsindat(workDir, completeDir):
     # DATs lists for comparing both
@@ -202,9 +194,10 @@ def countromsindat(workDir, completeDir):
                 os.rename(source, destination)
 
     # Checks whether you are missing some ROM's
-    print(f'Checking if we are still missing any roms in folder {workDir}')
-    for root, subdirs, datfiles in os.walk(datDir):
-        for dat in datfiles:
+    print(f'Checking if we are still missing any roms in our work directory.')
+    datDirF = corelib.getsubdir(datDir)
+    if len(datDirF) > 0:
+        for dat in datDirF:
             tree = ET.parse(f"./{datDir}/{dat}")
             root = tree.getroot()
             for romset in root.findall('.//header/name'):
@@ -267,7 +260,7 @@ if chkszip == 0:
     # Some management of the roms folder, we can
     # decide to move the folders we worked on to
     # the complete folder
-    countromsindat(romDir[0], romDir[1])
+    # countromsindat(romDir[0], romDir[1])
     print('Exit script, nothing more to do.')
 else:
     print('Aborting, 7zip is not installed you can install it by running: "apt/ dnf install p7zip"')
